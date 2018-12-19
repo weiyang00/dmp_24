@@ -11,7 +11,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache</groupId>
-            <artifactId>spark-assembly-1.6.0-hadoop-2.6.0</artifactId>
+            <artifactId>spark-assembly-1.6.1-hadoop-2.6.0</artifactId>
             <version>1.6.1</version>
         </dependency>
 
