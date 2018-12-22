@@ -5,6 +5,11 @@ import cn.dmp.utils.{JedisPools, RptUtils}
 import org.apache.commons.lang.StringUtils
 import org.apache.spark.{SparkConf, SparkContext}
 
+
+/**
+  * 媒体报表分析
+  *     从 redis 字典库读取
+  */
 object AppAnalyseRptV2 {
 
     def main(args: Array[String]): Unit = {
@@ -31,7 +36,6 @@ object AppAnalyseRptV2 {
         sparkConf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
 
         val sc = new SparkContext(sparkConf)
-
 
         // 读取数据
         sc.textFile(inputPath)

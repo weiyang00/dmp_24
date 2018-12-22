@@ -38,17 +38,20 @@ object AreaAnalyseRptV2 {
 
         // sparkConf.registerKryoClasses(Array(classOf[Log]))
 
+      /**
+      读取原始数据格式
+       */
         val sc = new SparkContext(sparkConf)
 
         sc.textFile(logInputPath)
           .map(_.split(",", -1))
           .filter(_.length >= 85)
           .map(arr => {
-              val log = Log(arr)
+              val log: Log = Log(arr)
 
-              val req = RptUtils.caculateReq(log.requestmode, log.processnode)
-              val rtb = RptUtils.caculateRtb(log.iseffective, log.isbilling,log.isbid, log.adorderid, log.iswin, log.winprice, log.adpayment)
-              val showClick = RptUtils.caculateShowClick(log.requestmode, log.iseffective)
+              val req : List[Double] = RptUtils.caculateReq(log.requestmode, log.processnode)
+              val rtb : List[Double] = RptUtils.caculateRtb(log.iseffective, log.isbilling,log.isbid, log.adorderid, log.iswin, log.winprice, log.adpayment)
+              val showClick : List[Double] = RptUtils.caculateShowClick(log.requestmode, log.iseffective)
 
               ((log.provincename, log.cityname), req ++ rtb ++ showClick)
               // (省，地市，媒体，渠道，操作系统，网络类型,...，List(9个指标数据))
@@ -59,7 +62,9 @@ object AreaAnalyseRptV2 {
 
 
 
-        // 读取parquet文件
+       /**
+       读取parquet文件
+        */
         /*val sQLContext = new SQLContext(sc)
         val parquetData: DataFrame = sQLContext.read.parquet(logInputPath)
         parquetData.map(row =>{
@@ -85,7 +90,8 @@ object AreaAnalyseRptV2 {
 
         }).reduceByKey((list1, list2) => {
             list1.zip(list2).map(t => t._1 + t._2)
-        }).map(t => t._1._1+","+t._1._2+","+t._2.mkString(","))
+        })
+          .map(t => t._1._1+","+t._1._2+","+t._2.mkString(",")) // 转换输出的格式（已逗号的格式分割展示）
           .saveAsTextFile(resultOutputPath)*/
 
         sc.stop()
