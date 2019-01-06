@@ -9,6 +9,7 @@ import org.apache.hadoop.hbase.util.Bytes
 import org.apache.hadoop.mapred.JobConf
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.hadoop.hbase.mapred.TableOutputFormat
+import org.apache.commons.lang.StringUtils
 
 import scala.collection.mutable
 
@@ -59,7 +60,7 @@ object Tags4User extends App {
 
   val day = "20180106"
 
-  val hBaseTableName = "tb_user_tags"
+  val hBaseTableName = "tbs_user_tags"
 
   private val admin: Admin = connection.getAdmin
 
@@ -67,9 +68,8 @@ object Tags4User extends App {
     println(s"$hBaseTableName 不存在" )
 
     val nameName = new HTableDescriptor(TableName.valueOf(hBaseTableName))
-
-
-    val descriptor = new HColumnDescriptor(s"day$day")
+    // 设置表的列族
+    val descriptor = new HColumnDescriptor("cf")
     nameName.addFamily(descriptor)
 
     admin.createTable(nameName)
@@ -122,7 +122,7 @@ object Tags4User extends App {
     val allMaps = AllTags.mkTags(trade, broadcast.value)
 
     (trade.mobile, allMaps.toList)
-  })
+  }).filter(tradeUserAndList => StringUtils.isNotEmpty(tradeUserAndList._1) && tradeUserAndList._1.size > 0)
     .reduceByKey((a, b) =>{
       (a++b).groupBy(_._1).mapValues(_.foldLeft(0)(_ + _._2.asInstanceOf[Int])).toList
     }).map{
@@ -130,7 +130,7 @@ object Tags4User extends App {
       var put = new Put(Bytes.toBytes(mobile))
 
       val str = userTages.map(t => t._1 + ":" + t._2).mkString(",")
-
+      // Put.add方法接收三个参数：列族，列名，数据
       put.addColumn(Bytes.toBytes("cf"), Bytes.toBytes(s"day$day"), Bytes.toBytes(str))
 
       (new ImmutableBytesWritable(), put) //  ImmutableBytesWritable() 指的是rewkey
