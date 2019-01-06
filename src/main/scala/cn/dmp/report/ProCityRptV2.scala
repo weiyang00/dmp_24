@@ -6,6 +6,15 @@ import com.typesafe.config.ConfigFactory
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{DataFrame, SQLContext, SaveMode}
 
+
+/**
+  * 统计日志文件中省市的数据量分布情况
+  *
+  *  本次统计是基于parquet文件
+  *
+  * 需求2：
+  *     将统计出来的结果存储到mysql中
+  */
 object ProCityRptV2 {
 
 

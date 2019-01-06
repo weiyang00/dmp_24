@@ -11,6 +11,14 @@ object NBF {
         }
     }
 
+    def toLong(str: String): Long = {
+        try {
+            str.toLong
+        } catch {
+            case _: Exception => 0
+        }
+    }
+
     def toDouble(str: String): Double = {
         try {
             str.toDouble

@@ -11,9 +11,6 @@ import org.apache.spark.{SparkConf, SparkContext}
   *
   * 需求1：
   *     将统计出来的结果存储成json文件格式
-  *
-  * 需求2：
-  *     将统计出来的结果存储到mysql中
   */
 object ProCityRpt {
 
