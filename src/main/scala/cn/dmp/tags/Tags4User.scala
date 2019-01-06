@@ -1,11 +1,14 @@
 package cn.dmp.tags
 
-import java.util.Properties
-
 import cn.dmp.beans.Trade
-import cn.dmp.trade.UserMobileAnalyseRpt.{sc, usermobiles, users}
-import com.typesafe.config.ConfigFactory
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.hbase.{HColumnDescriptor, HTableDescriptor, TableName}
+import org.apache.hadoop.hbase.client.{Admin, Connection, ConnectionFactory, Put}
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable
+import org.apache.hadoop.hbase.util.Bytes
+import org.apache.hadoop.mapred.JobConf
 import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.hadoop.hbase.mapred.TableOutputFormat
 
 import scala.collection.mutable
 
@@ -19,6 +22,11 @@ import scala.collection.mutable
   * @Description: Please fill description of the file here
   * @Date: 2019/1/5 20:54
   */
+/**
+  * 用户画像
+  * 保存到hbase
+  */
+
 object Tags4User extends App {
 
   val inputPath = "D://test/anywood_trade_supply_146.csv"
@@ -42,7 +50,47 @@ object Tags4User extends App {
 
   val sqlContext = new SQLContext(sc)
 
+  /**
+    * 判断hbase中的表是否存在，如果不存在则创建之
+    */
+  private val configuration: Configuration = sc.hadoopConfiguration
+  configuration.set("hbase.zookeeper.quorum","host-0:2182,host-0:2183,host-0:2184")
+    private val connection: Connection = ConnectionFactory.createConnection(configuration)
 
+  val day = "20180106"
+
+  val hBaseTableName = "tb_user_tags"
+
+  private val admin: Admin = connection.getAdmin
+
+  if (!admin.tableExists(TableName.valueOf(hBaseTableName))){
+    println(s"$hBaseTableName 不存在" )
+
+    val nameName = new HTableDescriptor(TableName.valueOf(hBaseTableName))
+
+
+    val descriptor = new HColumnDescriptor(s"day$day")
+    nameName.addFamily(descriptor)
+
+    admin.createTable(nameName)
+
+    admin.close()
+    connection.close()
+  }
+
+
+  /**
+    * 指定key的输出类型
+    */
+  private val conf = new JobConf(configuration)
+  // 指定key的输出类型 -- table 类型
+  conf.setOutputFormat(classOf[TableOutputFormat])
+  // 指定表名
+  conf.set(TableOutputFormat.OUTPUT_TABLE, hBaseTableName)
+
+  /**
+    * 加载货物等级规则
+    */
   val grads = sc.textFile("src/main/resources/gradeChange").map(grad => {
      val allGrades = grad.split(":")
     val standardGrade: String = allGrades(0)
@@ -77,7 +125,18 @@ object Tags4User extends App {
   })
     .reduceByKey((a, b) =>{
       (a++b).groupBy(_._1).mapValues(_.foldLeft(0)(_ + _._2.asInstanceOf[Int])).toList
-    }).saveAsTextFile(outputPath)
+    }).map{
+    case (mobile, userTages) =>{
+      var put = new Put(Bytes.toBytes(mobile))
+
+      val str = userTages.map(t => t._1 + ":" + t._2).mkString(",")
+
+      put.addColumn(Bytes.toBytes("cf"), Bytes.toBytes(s"day$day"), Bytes.toBytes(str))
+
+      (new ImmutableBytesWritable(), put) //  ImmutableBytesWritable() 指的是rewkey
+    }
+
+  }.saveAsHadoopDataset(conf)
 
   sc.stop
 
