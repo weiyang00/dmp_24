@@ -5,9 +5,9 @@ import redis.clients.jedis.{JedisPool, JedisPoolConfig}
 
 object JedisPools {
 
-    private val jedisPool = new JedisPool(new GenericObjectPoolConfig(), "10.172.50.54", 6379)
+  private val jedisPool = new JedisPool(new GenericObjectPoolConfig(), "10.172.50.54", 6379)
 
 
-    def getJedis() = jedisPool.getResource
+  def getJedis() = jedisPool.getResource
 
 }

@@ -14,7 +14,7 @@ import scala.collection.mutable
   */
 trait Tags {
 
-  def mkTags(any: Any*) : mutable.Map[String, Any]
+  def mkTags(any: Any*): mutable.Map[String, Any]
 
 
 }

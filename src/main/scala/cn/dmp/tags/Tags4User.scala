@@ -55,8 +55,8 @@ object Tags4User extends App {
     * 判断hbase中的表是否存在，如果不存在则创建之
     */
   private val configuration: Configuration = sc.hadoopConfiguration
-  configuration.set("hbase.zookeeper.quorum","host-0:2182,host-0:2183,host-0:2184")
-    private val connection: Connection = ConnectionFactory.createConnection(configuration)
+  configuration.set("hbase.zookeeper.quorum", "host-0:2182,host-0:2183,host-0:2184")
+  private val connection: Connection = ConnectionFactory.createConnection(configuration)
 
   val day = "20180106"
 
@@ -64,8 +64,8 @@ object Tags4User extends App {
 
   private val admin: Admin = connection.getAdmin
 
-  if (!admin.tableExists(TableName.valueOf(hBaseTableName))){
-    println(s"$hBaseTableName 不存在" )
+  if (!admin.tableExists(TableName.valueOf(hBaseTableName))) {
+    println(s"$hBaseTableName 不存在")
 
     val nameName = new HTableDescriptor(TableName.valueOf(hBaseTableName))
     // 设置表的列族
@@ -92,7 +92,7 @@ object Tags4User extends App {
     * 加载货物等级规则
     */
   val grads = sc.textFile("src/main/resources/gradeChange").map(grad => {
-     val allGrades = grad.split(":")
+    val allGrades = grad.split(":")
     val standardGrade: String = allGrades(0)
     val nonstandardGrades: String = allGrades(1)
     (standardGrade, nonstandardGrades)
@@ -102,9 +102,9 @@ object Tags4User extends App {
 
   var gradeMap = mutable.HashMap[String, String]()
 
-  gradeGanso.foreach(gradeGans =>{
-    gradeGans._2.split(" ").foreach(gradeMap.put(_,gradeGans._1))
-      })
+  gradeGanso.foreach(gradeGans => {
+    gradeGans._2.split(" ").foreach(gradeMap.put(_, gradeGans._1))
+  })
 
   println(gradeMap)
 
@@ -114,19 +114,19 @@ object Tags4User extends App {
   val trads = sc.textFile(inputPath)
     .map(_.split(",", -1))
     .filter(_.length >= 19)
-    .map(Trade(_)).map(trade =>{
+    .map(Trade(_)).map(trade => {
     /**
       * 数据进行标签化处理
       */
-//    val wgoodsTagsMap = WgoodsTags.mkTags(trade, broadcast.value)
+    //    val wgoodsTagsMap = WgoodsTags.mkTags(trade, broadcast.value)
     val allMaps = AllTags.mkTags(trade, broadcast.value)
 
     (trade.mobile, allMaps.toList)
   }).filter(tradeUserAndList => StringUtils.isNotEmpty(tradeUserAndList._1) && tradeUserAndList._1.size > 0)
-    .reduceByKey((a, b) =>{
-      (a++b).groupBy(_._1).mapValues(_.foldLeft(0)(_ + _._2.asInstanceOf[Int])).toList
-    }).map{
-    case (mobile, userTages) =>{
+    .reduceByKey((a, b) => {
+      (a ++ b).groupBy(_._1).mapValues(_.foldLeft(0)(_ + _._2.asInstanceOf[Int])).toList
+    }).map {
+    case (mobile, userTages) => {
       var put = new Put(Bytes.toBytes(mobile))
 
       val str = userTages.map(t => t._1 + ":" + t._2).mkString(",")

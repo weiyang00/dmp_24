@@ -16,7 +16,7 @@ import scala.collection.mutable
   * @Description: Please fill description of the file here
   * @Date: 2019/1/5 21:02
   */
-object AllTags extends Tags{
+object AllTags extends Tags {
 
   override def mkTags(any: Any*): mutable.Map[String, Any] = {
 
@@ -37,30 +37,30 @@ object AllTags extends Tags{
       *
       */
 
-      if ( trade.price > 0){
-        map.put( "price:" +String.valueOf(trade.price), 1)
+    if (trade.price > 0) {
+      map.put("price:" + String.valueOf(trade.price), 1)
+    }
+
+    if (StringUtils.isNotEmpty(trade.spec)) {
+      var spec = trade.spec.trim
+        .replace("x", "*")
+        .replace("mm", "")
+        .replace("cm", "0")
+        .replace("m", "00")
+      if (!spec.contains("日"))
+        map.put("spec:" + spec, 1)
+    }
+
+    if (StringUtils.isNotEmpty(trade.grade)) {
+      if (gradesMap.contains(trade.grade)) {
+        map.put("grade:" + gradesMap.get(trade.grade), 1)
       }
 
-      if  (StringUtils.isNotEmpty(trade.spec)){
-        var spec = trade.spec.trim
-          .replace("x", "*")
-          .replace("mm", "")
-          .replace("cm","0")
-          .replace("m","00")
-        if (!spec.contains("日"))
-        map.put("spec:"+spec, 1)
-      }
+    }
 
-      if (StringUtils.isNotEmpty(trade.grade)){
-        if (gradesMap.contains(trade.grade)){
-          map.put("grade:"+  gradesMap.get(trade.grade), 1)
-        }
+    if (StringUtils.isNotEmpty(trade.productName)) map.put("goodsName:" + trade.productName, 1)
 
-      }
-
-      if (StringUtils.isNotEmpty(trade.productName)) map.put("goodsName:"+trade.productName, 1)
-
-      map
+    map
   }
 
 

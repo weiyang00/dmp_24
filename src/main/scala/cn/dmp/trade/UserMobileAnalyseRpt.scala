@@ -82,7 +82,5 @@ object UserMobileAnalyseRpt extends App {
   trades.foreach(trade => println(trade.mobile + ","))
 
 
-
-
   sc.stop
 }
