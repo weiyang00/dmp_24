@@ -1,6 +1,6 @@
 package cn.dmp.graphx
 
-import org.apache.spark.graphx.{Edge, Graph, VertexId}
+import org.apache.spark.graphx.{Edge, Graph, VertexId, VertexRDD}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -58,13 +58,31 @@ object CommonFriends extends App{
 
   private val graph = Graph(userValues, userRelations)
 
-  graph.connectedComponents().edges.foreach(println)
+//  graph.connectedComponents().vertices.foreach(println)
+
+  private val vertices: VertexRDD[VertexId] = graph.connectedComponents().vertices
+
+  private val commonFriendsIds: RDD[(VertexId, List[VertexId])] = vertices.map(t => (t._2, List(t._1))).reduceByKey(_ ++ _)
+
+  commonFriendsIds.foreach(println)
 
 
+  /**
+    * userValues --> (userId, (姓名， 年龄))
+    * vertices --> (userId， 共同的顶点)
+    */
+  private val commonFriends = userValues
+    .join(vertices)
+    .map {
+    case (userId, ((name, age), cmId)) =>
+      (cmId, List((userId, name, age)))
+  }
+    .reduceByKey(_ ++ _)
+    .map(t =>{
+    (t._1, t._2.filter(one => one._1 != t._1))
+  })
 
-
-
-
+  commonFriends.foreach(println)
 
 
 
