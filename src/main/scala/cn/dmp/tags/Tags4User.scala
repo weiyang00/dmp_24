@@ -30,7 +30,7 @@ import scala.collection.mutable
 
 object Tags4User extends App {
 
-  val inputPath = "D://test/anywood_trade_supply_146.csv"
+  val inputPath = "/src/main/resources/docs/anywood_trade_supply_146.csv"
   val dictFilePath = ""
   val outputPath = "D:/test/tags-wgoods-user"
 
