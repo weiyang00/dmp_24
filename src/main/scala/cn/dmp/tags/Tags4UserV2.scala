@@ -1,6 +1,7 @@
 package cn.dmp.tags
 
 import cn.dmp.beans.{Trade, TradeV2}
+import cn.dmp.merge.UserTagsMerge.{dictFilePath, inputPath, outputPath}
 import cn.dmp.tags.Tags4User.broadcast
 import com.example.utils.MobileUtils
 import org.apache.commons.lang.StringUtils
@@ -37,9 +38,9 @@ object Tags4UserV2 extends App {
   val dictFilePath = ""
   val outputPath = "D:/test/tags-wgoods-user"
 
-  print("inputPath === " + inputPath)
-  print("dictFilePath === " + dictFilePath)
-  print("outputPath === " + outputPath)
+  println(s"inputPath    :'$inputPath'")
+  println(s"dictFilePath :'$dictFilePath'")
+  println(s"outputPath   :'$outputPath'")
 
   // 2 创建sparkconf->sparkContext
   val sparkConf = new SparkConf()

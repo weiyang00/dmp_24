@@ -18,8 +18,7 @@ import sun.security.provider.certpath.Vertex
   * @Date: 2019/1/5 20:54
   */
 /**
-  * 用户画像
-  * 保存到hbase
+  * 相同用户标签合并merge
   */
 
 object UserTagsMerge extends App {
@@ -28,9 +27,9 @@ object UserTagsMerge extends App {
   val dictFilePath = ""
   val outputPath = "D:/test/tags-wgoods-user"
 
-  println("inputPath    === " + inputPath)
-  println("dictFilePath === " + dictFilePath)
-  println("outputPath   === " + outputPath)
+  println(s"inputPath    : '$inputPath'")
+  println(s"dictFilePath : '$dictFilePath'")
+  println(s"outputPath   : '$outputPath'")
 
   // 2 创建sparkconf->sparkContext
   val sparkConf = new SparkConf()

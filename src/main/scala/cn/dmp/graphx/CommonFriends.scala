@@ -1,5 +1,6 @@
 package cn.dmp.graphx
 
+import cn.dmp.merge.UserTagsMerge.{dictFilePath, inputPath, outputPath}
 import org.apache.spark.graphx.{Edge, Graph, VertexId, VertexRDD}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
@@ -20,9 +21,10 @@ object CommonFriends extends App {
   val dictFilePath = ""
   val outputPath = "D:/test/tags-wgoods-user"
 
-  print("inputPath === " + inputPath)
-  print("dictFilePath === " + dictFilePath)
-  print("outputPath === " + outputPath)
+  println(s"inputPath    :'$inputPath'")
+  println(s"dictFilePath :'$dictFilePath'")
+  println(s"outputPath   :'$outputPath'")
+
 
   // 2 创建sparkconf->sparkContext
   val sparkConf = new SparkConf()

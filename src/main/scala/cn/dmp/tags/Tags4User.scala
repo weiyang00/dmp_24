@@ -1,6 +1,7 @@
 package cn.dmp.tags
 
 import cn.dmp.beans.Trade
+import cn.dmp.merge.UserTagsMerge.{dictFilePath, inputPath, outputPath}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.{HColumnDescriptor, HTableDescriptor, TableName}
 import org.apache.hadoop.hbase.client.{Admin, Connection, ConnectionFactory, Put}
@@ -34,9 +35,9 @@ object Tags4User extends App {
   val dictFilePath = ""
   val outputPath = "D:/test/tags-wgoods-user"
 
-  print("inputPath === " + inputPath)
-  print("dictFilePath === " + dictFilePath)
-  print("outputPath === " + outputPath)
+  println(s"inputPath    :'$inputPath'")
+  println(s"dictFilePath :'$dictFilePath'")
+  println(s"outputPath   :'$outputPath'")
 
   // 2 创建sparkconf->sparkContext
   val sparkConf = new SparkConf()
