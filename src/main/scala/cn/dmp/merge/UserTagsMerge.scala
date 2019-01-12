@@ -24,13 +24,13 @@ import sun.security.provider.certpath.Vertex
 
 object UserTagsMerge extends App {
 
-  val inputPath = "D:/test/trades/mobiles"
+  val inputPath = "D:\\SpaceJava\\dmp_24\\src\\main\\resources\\data\\mobiles"
   val dictFilePath = ""
   val outputPath = "D:/test/tags-wgoods-user"
 
-  print("inputPath === " + inputPath)
-  print("dictFilePath === " + dictFilePath)
-  print("outputPath === " + outputPath)
+  println("inputPath    === " + inputPath)
+  println("dictFilePath === " + dictFilePath)
+  println("outputPath   === " + outputPath)
 
   // 2 创建sparkconf->sparkContext
   val sparkConf = new SparkConf()
