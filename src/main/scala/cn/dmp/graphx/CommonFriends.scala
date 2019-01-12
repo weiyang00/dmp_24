@@ -14,7 +14,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   * @Description: Please fill description of the file here
   * @Date: 2019/1/9 14:07
   */
-object CommonFriends extends App{
+object CommonFriends extends App {
 
   val inputPath = "D://test/anywood_trade_supply_146.csv"
   val dictFilePath = ""
@@ -58,7 +58,7 @@ object CommonFriends extends App{
 
   private val graph = Graph(userValues, userRelations)
 
-//  graph.connectedComponents().vertices.foreach(println)
+  //  graph.connectedComponents().vertices.foreach(println)
 
   private val vertices: VertexRDD[VertexId] = graph.connectedComponents().vertices
 
@@ -74,16 +74,15 @@ object CommonFriends extends App{
   private val commonFriends = userValues
     .join(vertices)
     .map {
-    case (userId, ((name, age), cmId)) =>
-      (cmId, List((userId, name, age)))
-  }
+      case (userId, ((name, age), cmId)) =>
+        (cmId, List((userId, name, age)))
+    }
     .reduceByKey(_ ++ _)
-    .map(t =>{
-    (t._1, t._2.filter(one => one._1 != t._1))
-  })
+    .map(t => {
+      (t._1, t._2.filter(one => one._1 != t._1))
+    })
 
   commonFriends.foreach(println)
-
 
 
   sc.stop

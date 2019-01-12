@@ -1,6 +1,8 @@
 package cn.dmp.tags
 
-import cn.dmp.beans.Trade
+import cn.dmp.beans.{Trade, TradeV2}
+import cn.dmp.tags.Tags4User.broadcast
+import com.example.utils.MobileUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.client.{Admin, Connection, ConnectionFactory, Put}
@@ -31,7 +33,7 @@ import scala.collection.mutable
 
 object Tags4UserV2 extends App {
 
-  val inputPath = "/src/main/resources/data/yuzhuwood_trade_supply_1-19953.csv"
+  val inputPath = "D:\\SpaceJava\\dmp_24\\src\\main\\resources\\data\\yuzhuwood_trade_supply_1-19953.csv"
   val dictFilePath = ""
   val outputPath = "D:/test/tags-wgoods-user"
 
@@ -54,11 +56,30 @@ object Tags4UserV2 extends App {
 
   private val rows: RDD[String] = sc.textFile(inputPath)
 
+  rows.map(row => row.split(",", -1))
+    .filter(_.length >= 11)
+    .map(TradeV2(_))
+    .map(trade => {
+      val mobiles: Array[String] = (trade.mobile
+        .split(",") ++ trade.corpMobile.split(","))
+        .filter(mob => {
+          MobileUtils.isFixedPhone(mob) || MobileUtils.isPhone(mob)
+        })
 
+      val allMaps = AllV2Tags.mkTags(trade)
 
-
-
-
+      (mobiles.mkString(","), allMaps.toList)
+    })
+    .filter(_._1.length > 0)
+    //将当天的用户信息合并
+    .reduceByKey((map1, map2) => {
+    (map1 ++ map2).groupBy(_._1).mapValues(_.foldLeft(0)(_ + _._2.asInstanceOf[Int])).toList
+  })
+    .map(al => {
+      val map = al._2.toMap
+      (al._1 + "=>" + map.mkString(",")).trim
+    })
+    .saveAsTextFile("D:/test/trades/mobiles")
 
 
   sc.stop
