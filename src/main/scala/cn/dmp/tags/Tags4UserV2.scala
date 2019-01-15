@@ -29,12 +29,13 @@ import scala.collection.mutable
   */
 /**
   * 用户画像
-  * 保存到hbase
+  * 有共同好友
+  * 保存到本地
   */
 
 object Tags4UserV2 extends App {
 
-  val inputPath = "D:\\SpaceJava\\dmp_24\\src\\main\\resources\\data\\yuzhuwood_trade_supply_1-19953.csv"
+  val inputPath = "D:\\code\\java\\dmp_24\\src\\main\\resources\\data\\yuzhuwood_trade_supply_1-19953.csv"
   val dictFilePath = ""
   val outputPath = "D:/test/tags-wgoods-user"
 

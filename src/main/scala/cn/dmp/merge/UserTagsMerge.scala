@@ -23,7 +23,7 @@ import sun.security.provider.certpath.Vertex
 
 object UserTagsMerge extends App {
 
-  val inputPath = "D:\\SpaceJava\\dmp_24\\src\\main\\resources\\data\\mobiles"
+  val inputPath = "D:\\code\\java\\dmp_24\\src\\main\\resources\\data\\mobiles"
   val dictFilePath = ""
   val outputPath = "D:/test/tags-wgoods-user"
 
