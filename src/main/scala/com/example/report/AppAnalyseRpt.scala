@@ -5,26 +5,20 @@ import com.example.utils.RptUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.spark.{SparkConf, SparkContext}
 
+
 /**
   * 媒体报表分析
   * broadcast 广播变量的使用
   */
 object AppAnalyseRpt extends App {
 
-
-  if (args.length != 3) {
-    println(
-      """
-        |com.example.report.AppAnalyseRpt
-        |参数：
-        | 输入路径
-        | 字典文件路径
-        | 输出路径
-      """.stripMargin)
-    sys.exit()
-  }
-
-  val Array(inputPath, dictFilePath, outputPath) = args
+  /**
+    * inputPath -- 输入路径
+    * outputPath -- 输出路径
+    * dictFilePath -- 字典文件路径
+    */
+    val inputPath,outputPath,dictFilePath =
+      "/resources/data/"; ""; ""
 
   // 2 创建sparkconf->sparkContext
   val sparkConf = new SparkConf()
