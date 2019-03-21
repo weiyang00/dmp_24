@@ -16,6 +16,18 @@ import java.util.regex.Pattern;
 public class MobileUtils {
 
 
+    public static void main(String[] args){
+        String mo = "513513";
+        System.out.println(isFixedPhone(mo) || isPhone(mo));
+        System.out.println(isFixedPhone(mo) );
+        System.out.println( isPhone(mo));
+
+        String mo2 = "d513513";
+        System.out.println(isFixedPhone(mo2) || isPhone(mo2));
+    }
+
+
+
     /**
      * 校验移动电话（手机）号码合法性
      *
