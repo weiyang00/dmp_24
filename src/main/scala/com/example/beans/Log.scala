@@ -177,11 +177,11 @@ class Log(val sessionid: String,
     case 84 => mediatype
   }
 
-  // 对象一个又多少个成员属性
-  override def productArity: Int = 85
+// 对象一个又多少个成员属性
+override def productArity: Int = 85
 
-  // 比较两个对象是否是同一个对象
-  override def canEqual(that: Any): Boolean = that.isInstanceOf[Log]
+// 比较两个对象是否是同一个对象
+override def canEqual(that: Any): Boolean = that.isInstanceOf[Log]
 }
 
 
