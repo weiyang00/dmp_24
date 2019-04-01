@@ -72,6 +72,13 @@
         </dependency>
         <!-- Hbase end-->
 
+        <!-- es-hadoop -->
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch-hadoop</artifactId>
+            <version>6.2.1</version>
+        </dependency>
+
 
     </dependencies>
 
